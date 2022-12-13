@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+</head>
+
+<body>
+  <button id="genExam">genExam</button>
+  <button id="check">check</button>
+
+  <script>
+    (async () => {
+
+      await window.ethereum.request({ method: 'eth_requestAccounts' })
+
+      // Mumbai Testnet
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+      const signer = provider.getSigner()
+
+      const exam = new ethers.Contract(
+        '0xA8145279524fb6503Ea3c6814B3fE0eB7B961D2D',
+        [
+          {
+            "inputs": [
+              {
+                "internalType": "string",
+                "name": "_examId",
+                "type": "string"
+              },
+              {
+                "internalType": "uint8",
+                "name": "_type",
+                "type": "uint8"
+              },
+              {
+                "internalType": "uint8",
+                "name": "_level",
+                "type": "uint8"
+              }
+            ],
+            "name": "genExam",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ],
+        signer
+      )
+
+      const check = new ethers.Contract(
+        '0xeFfaC63F4A31FA0bFdC9be495Dc0d74C445007BB',
+        [
+          {
+            "inputs": [
+              {
+                "internalType": "string",
+                "name": "_examId",
+                "type": "string"
+              },
+              {
+                "internalType": "uint8[]",
+                "name": "_answers",
+                "type": "uint8[]"
+              }
+            ],
+            "name": "getScore",
+            "outputs": [
+              {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          }
+        ],
+        signer
+      )
+
+      const genExam = async () => {
+        // const overrides = {value: 1}
+        const overrides = {gasPrice: ethers.BigNumber.from("975551276")}
+        const result = await exam.genExam('examId', 1, 1)
+        console.log(await result)
+      }
+
+      const getScore = async () => {
+        const result = await check.getScore('examId', [1, 1, 1, 1, 1, 1, 1, 1])
+        console.log(await result)
+      }
+
+      document.getElementById('genExam').addEventListener('click', genExam)
+      document.getElementById('check').addEventListener('click', getScore)
+    })()
+
+  </script>
+
+
+</body>
+
+</html>
