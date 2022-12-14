@@ -1,21 +1,23 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 
 import { useAppSelector } from '@store/index'
 
 import NotConnected from './NotConnected'
-import Connected from './Connected'
+
+const Connected = lazy(() => import('./Connected'))
 
 export default (): JSX.Element => {
-
   const { accountAddress } = useAppSelector((state) => state.wallet)
 
   return (
     <>
-      {
-        accountAddress
-          ? <Connected />
-          : <NotConnected />
-      }
+      {accountAddress ? (
+        <Suspense>
+          <Connected />
+        </Suspense>
+      ) : (
+        <NotConnected />
+      )}
     </>
   )
 }
