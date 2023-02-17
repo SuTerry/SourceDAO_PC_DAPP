@@ -76,6 +76,11 @@ const details: Lang = {
   [LOCAL.en_us]: 'Details',
 }
 
+const expired: Lang = {
+  [LOCAL.zh_cn]: '已过期',
+  [LOCAL.en_us]: 'Expired',
+}
+
 
 export {
   subTitle,
@@ -93,4 +98,5 @@ export {
   result,
   fee,
   details,
+  expired,
 }

@@ -76,6 +76,36 @@ const startNow: Lang = {
   [LOCAL.en_us]: 'Start Now',
 }
 
+const correct: Lang = {
+  [LOCAL.zh_cn]: '回答正确',
+  [LOCAL.en_us]: 'Correct Answer',
+}
+
+const wrong: Lang = {
+  [LOCAL.zh_cn]: '回答错误',
+  [LOCAL.en_us]: 'wrong Answe',
+}
+
+const results: Lang = {
+  [LOCAL.zh_cn]: '考试成绩',
+  [LOCAL.en_us]: 'Results',
+}
+
+const reExam: Lang = {
+  [LOCAL.zh_cn]: '重新考试',
+  [LOCAL.en_us]: 'Re-examination',
+}
+
+const cd: Lang = {
+  [LOCAL.zh_cn]: '证书查询',
+  [LOCAL.en_us]: 'Certificate Details',
+}
+
+const ed: Lang = {
+  [LOCAL.zh_cn]: '考试结果查询',
+  [LOCAL.en_us]: 'Exam Details',
+}
+
 
 export {
   timeRemaining,
@@ -93,4 +123,10 @@ export {
   examResult,
   congratulations,
   startNow,
+  correct,
+  wrong,
+  results,
+  reExam,
+  cd,
+  ed,
 }

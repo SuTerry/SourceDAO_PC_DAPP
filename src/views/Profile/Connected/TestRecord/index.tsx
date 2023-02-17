@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { utils } from 'ethers'
+
 import {
   Table,
   TableBody,
@@ -9,24 +11,22 @@ import {
   TableRow,
   Paper,
   Button,
+  Typography,
 } from '@mui/material'
 
 import langHook from '@hooks/localHook'
-
 import { profileLang } from '@langs/index'
 
 import { dateTimeConversion, scoreGrade } from '@utils/index'
 
-import { SourceDaoReward } from '@api/reward'
-
+import type { SourceDaoRes } from '..'
 
 interface TestRecordProps {
-  rows: SourceDaoReward[]
-  handleRecord: (currentRecord: SourceDaoReward) => void
+  rows: SourceDaoRes[]
+  handleRecord: (currentRecord: SourceDaoRes) => void
 }
 
 export default ({ rows, handleRecord }: TestRecordProps): JSX.Element => {
-
   const local = langHook()
 
   return (
@@ -35,7 +35,9 @@ export default ({ rows, handleRecord }: TestRecordProps): JSX.Element => {
         <TableHead>
           <TableRow>
             <TableCell colSpan={5}>
-              {local(profileLang.testRecord)}
+              <Typography variant="h6">
+                {local(profileLang.testRecord)}
+              </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -47,22 +49,29 @@ export default ({ rows, handleRecord }: TestRecordProps): JSX.Element => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TableRow
-              key={row.id.toString()}
+              key={index}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.qlevel}
+                {row.typeName}
               </TableCell>
-              <TableCell >{dateTimeConversion(
-                parseInt(row.time.toString()) * 1000,
-                'YYYY-MM-DD HH:mm:ss'
-              )}</TableCell>
-              <TableCell>{scoreGrade(row.score)}</TableCell>
-              <TableCell>{row.qlevel}</TableCell>
               <TableCell>
-                <Button sx={{ color: '#2F79FF' }} onClick={() => handleRecord(row)}>{local(profileLang.details)}</Button>
+                {dateTimeConversion(
+                  parseInt(row.time.toString()) * 1000,
+                  'YYYY-MM-DD HH:mm:ss'
+                )}
+              </TableCell>
+              <TableCell>{scoreGrade(row.score)}</TableCell>
+              <TableCell>{utils.formatEther(row.lowCost.toString()) + row.costUnit}</TableCell>
+              <TableCell>
+                <Button
+                  sx={{ color: '#2F79FF' }}
+                  onClick={() => handleRecord(row)}
+                >
+                  {local(profileLang.details)}
+                </Button>
               </TableCell>
             </TableRow>
           ))}

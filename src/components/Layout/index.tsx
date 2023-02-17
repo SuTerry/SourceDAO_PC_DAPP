@@ -29,6 +29,9 @@ export default (): JSX.Element => {
         {isHeader && <Header />}
         <Box sx={{
           padding: 4,
+          boxSizing: 'border-box',
+          height: isHeader ? 'calc(100vh - 64px)' : '100vh',
+          overflow: 'auto'
         }}>
           <Outlet />
         </Box>

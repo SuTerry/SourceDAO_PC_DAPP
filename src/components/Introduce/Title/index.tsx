@@ -17,7 +17,7 @@ export default (props: DialogTitleProps): JSX.Element => {
   const { children, onClose, ...other } = props
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle sx={{ m: 0, p: 3 }} {...other}>
       {children}
       {onClose ? (
         <IconButton

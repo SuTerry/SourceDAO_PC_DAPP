@@ -8,17 +8,21 @@ import thunk, { ThunkDispatch } from 'redux-thunk'
 import wallet from './modules/wallet'
 import local from './modules/local'
 import router from './modules/router'
+import user from './modules/user'
+import dialog from './modules/dialog'
 
 const reducers = combineReducers({
   wallet,
   local,
   router,
+  user,
+  dialog,
 })
 
 const persistConfig = {
   key: 'SourceDAO_PC_DAPP',
   storage,
-  blacklist: ['router'],
+  blacklist: ['router', 'dialog'],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)

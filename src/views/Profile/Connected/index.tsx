@@ -1,43 +1,72 @@
 import React, { useState, useEffect, useCallback } from 'react'
 
-import { useAppSelector } from '@store/index'
+import { useAppSelector, useAppDispatch } from '@store/index'
+import { setExamedType } from '@store/modules/user'
+import { setExamDetails } from '@store/modules/dialog'
 
-import { rewardApi } from '@api/index'
+import { examApi, rewardApi } from '@api/index'
 
 import MyAddress from './MyAddress'
+import SBTCover from './SBTCover'
 import TestRecord from './TestRecord'
-import Dialog from './Dialog'
+import Dialog from '@components/ExamDetails'
 
-import { SourceDaoReward } from '@api/reward'
+import type { SourceDaoReward } from '@api/reward'
 
+export type SourceDaoRes = SourceDaoReward & { typeName: string }
 
 export default (): JSX.Element => {
+  const { accountAddress } = useAppSelector((state) => state.wallet)
+  const { examedType } = useAppSelector((state) => state.user)
 
-  const { accountAddress } = useAppSelector(state => state.wallet)
+  const dispatch = useAppDispatch()
 
-  const [rows, setRows] = useState<SourceDaoReward[]>([])
+  const [sbts, setSbts] = useState<SourceDaoReward[]>([])
+  const [rows, setRows] = useState<SourceDaoRes[]>([])
 
-  const [currentRecord, setCurrentRecord] = useState<SourceDaoReward>()
+  const [currentRecord, setCurrentRecord] = useState<SourceDaoRes>()
 
-  const [open, setOpen] = useState(false)
-
-  const handleRecord = useCallback((_currentRecord: SourceDaoReward) => {
+  const handleRecord = useCallback((_currentRecord: SourceDaoRes) => {
     setCurrentRecord(_currentRecord)
-    setOpen(true)
+    dispatch(setExamDetails(true))
   }, [])
 
   const init = async () => {
-    const _sbts = await rewardApi.getTokensByUser(accountAddress)
-
     const promiseSbt: Promise<SourceDaoReward>[] = []
 
-    _sbts.forEach(sbt => {
+    const promiseRow: Promise<SourceDaoRes>[] = []
+
+    const _sbts = await rewardApi.getTokensByUser(accountAddress)
+
+    const _rows = await examApi.getExamsByUser(accountAddress)
+
+    _sbts.forEach((sbt) => {
       promiseSbt.push(rewardApi.getSBTMeta(parseInt(sbt.toString())))
     })
 
     const sbts = await Promise.all(promiseSbt)
 
-    setRows(sbts)
+    setSbts(sbts)
+
+    if (examedType.index < sbts.length) {
+      const sbtsCopy = [...sbts]
+      const _sbts = sbtsCopy.splice(examedType.index)
+      dispatch(setExamedType(_sbts))
+    }
+
+    _rows.forEach((row) => {
+      promiseRow.push(
+        new Promise(async (resolve) => {
+          const res = await rewardApi.getPreSBTMetaByExam(row)
+          const typeName = await examApi.getTypeName(res.qtype)
+          resolve({ ...res, typeName })
+        })
+      )
+    })
+
+    const rows = await Promise.all(promiseRow)
+
+    setRows(rows)
   }
 
   useEffect(() => {
@@ -47,9 +76,9 @@ export default (): JSX.Element => {
   return (
     <>
       <MyAddress />
+      <SBTCover sbts={sbts} />
       <TestRecord rows={rows} handleRecord={handleRecord} />
-      <Dialog open={open} record={currentRecord!} setOpen={setOpen} />
-      {/* <button onClick={handleConnect}>connect</button> */}
+      {currentRecord && <Dialog record={currentRecord} />}
     </>
   )
 }

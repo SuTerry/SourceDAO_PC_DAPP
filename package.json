@@ -22,6 +22,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@fontsource/alfa-slab-one": "^4.5.9",
     "@fontsource/space-grotesk": "^4.5.10",
     "@metamask/detect-provider": "^2.0.0",
     "@mui/icons-material": "^5.10.3",
@@ -31,7 +32,9 @@
     "@reduxjs/toolkit": "^1.8.5",
     "dayjs": "^1.11.5",
     "ethers": "^5.7.2",
+    "html2canvas": "^1.4.1",
     "ipfs-core": "^0.17.0",
+    "ipfs-http-client": "^60.0.0",
     "moment": "^2.29.4",
     "notistack": "^2.0.8",
     "react": "^18.2.0",

@@ -1,12 +1,12 @@
 import moment from 'moment'
 
 export const truncateMiddle = (
-  str: string,
+  str: string | undefined,
   frontLen = 4,
   backLen = 4,
-  truncateStr = '…',
+  truncateStr = '…'
 ): string => {
-  if (str === null) {
+  if (str === undefined) {
     return ''
   }
 
@@ -37,38 +37,13 @@ export const randomExamId = (): string => {
   return new Date().getTime() + random
 }
 
-export const utf8ArrayToStr = (array: Uint8Array): string => {
-  const len = array.length
-  let out, i, c, char2, char3
-
-  out = ''
-
-  i = 0
-  while (i < len) {
-    c = array[i++]
-    switch (c >> 4) {
-      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
-        out += String.fromCharCode(c)
-        break
-      case 12: case 13:
-        char2 = array[i++]
-        out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F))
-        break
-      case 14:
-        char2 = array[i++]
-        char3 = array[i++]
-        out += String.fromCharCode(((c & 0x0F) << 12) |
-          ((char2 & 0x3F) << 6) |
-          ((char3 & 0x3F) << 0))
-        break
-    }
-  }
-
-  return out
-}
-
-export const dateTimeConversion = (value: number, type = 'YYYY-MM-DD'): string => {
+export const dateTimeConversion = (
+  value: string | number,
+  type = 'YYYY-MM-DD'
+): string => {
+  if (typeof value === 'string') value = parseInt(value)
   if (!value) return ''
+  if (value.toString().length === 10) value *= 1000
   return moment(value).format(type)
 }
 
@@ -83,4 +58,14 @@ export const scoreGrade = (score: number): string => {
         : 'Credit'
       : 'Pass'
     : 'Fail'
+}
+
+export const dataURLtoFile = (dataURI: string, type = 'image/png'): File => {
+  const binary = atob(dataURI.split(',')[1])
+  const array = []
+  for (let i = 0; i < binary.length; i++) {
+    array.push(binary.charCodeAt(i))
+  }
+  const blob = new Blob([new Uint8Array(array)], { type })
+  return new File([blob], new Date() + '.png')
 }
