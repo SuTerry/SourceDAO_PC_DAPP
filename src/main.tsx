@@ -17,14 +17,16 @@ import '@css/main.less'
 const root = createRoot((document.getElementById('root') as Element))
 const persistor = persistStore(store)
 
-root.render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <HashRouter>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </HashRouter>
-    </PersistGate>
-  </Provider>
-)
+window.addEventListener('load', () => {
+  root.render(
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <HashRouter>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </HashRouter>
+      </PersistGate>
+    </Provider>
+  )
+})
